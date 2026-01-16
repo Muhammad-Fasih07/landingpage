@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <!-- Colors -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050B1D"/>
+      <stop offset="1" stop-color="#020613"/>
+    </linearGradient>
+
+    <linearGradient id="cyanGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00E6FF"/>
+      <stop offset="1" stop-color="#00B7FF"/>
+    </linearGradient>
+
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feColorMatrix in="b" type="matrix"
+        values="0 0 0 0 0
+                0 0 0 0 0.85
+                0 0 0 0 1
+                0 0 0 0.75 0" result="c"/>
+      <feMerge>
+        <feMergeNode in="c"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded background -->
+  <rect x="40" y="40" width="432" height="432" rx="90" fill="url(#bg)" filter="url(#softShadow)"/>
+
+  <!-- Inner tech frame -->
+  <rect x="74" y="74" width="364" height="364" rx="78"
+        fill="none" stroke="url(#cyanGrad)" stroke-opacity="0.32" stroke-width="6"/>
+
+  <!-- Circuit lines (tech aesthetic) -->
+  <g stroke="url(#cyanGrad)" stroke-opacity="0.55" stroke-width="6" stroke-linecap="round" fill="none">
+    <path d="M120 150 H175" />
+    <path d="M120 190 H160" />
+    <path d="M350 140 H392" />
+    <path d="M372 140 V175" />
+    <path d="M335 360 H395" />
+    <path d="M335 390 H375" />
+    <path d="M140 350 V405" />
+    <path d="M140 405 H210" />
+  </g>
+
+  <!-- Circuit nodes -->
+  <g fill="#00E6FF" fill-opacity="0.9">
+    <circle cx="175" cy="150" r="7"/>
+    <circle cx="160" cy="190" r="6"/>
+    <circle cx="392" cy="140" r="7"/>
+    <circle cx="372" cy="175" r="6"/>
+    <circle cx="395" cy="360" r="7"/>
+    <circle cx="375" cy="390" r="6"/>
+    <circle cx="140" cy="350" r="6"/>
+    <circle cx="210" cy="405" r="7"/>
+  </g>
+
+  <!-- Subtle dotted tech pattern -->
+  <g fill="#00E6FF" fill-opacity="0.14">
+    <circle cx="320" cy="310" r="3"/><circle cx="340" cy="310" r="3"/><circle cx="360" cy="310" r="3"/>
+    <circle cx="320" cy="330" r="3"/><circle cx="340" cy="330" r="3"/><circle cx="360" cy="330" r="3"/>
+    <circle cx="320" cy="350" r="3"/><circle cx="340" cy="350" r="3"/><circle cx="360" cy="350" r="3"/>
+  </g>
+
+  <!-- The F (smooth, bold, techy) -->
+  <g filter="url(#glow)">
+    <!-- Outer stroke for depth -->
+    <path d="M205 150
+             Q205 140 215 140
+             H330
+             Q340 140 340 150
+             V175
+             Q340 185 330 185
+             H250
+             V230
+             H320
+             Q330 230 330 240
+             V265
+             Q330 275 320 275
+             H250
+             V360
+             Q250 372 238 372
+             H215
+             Q205 372 205 360
+             Z"
+          fill="url(#cyanGrad)"/>
+
+    <!-- Inner highlight -->
+    <path d="M220 158
+             H325
+             V170
+             H235
+             V242
+             H315
+             V257
+             H235
+             V356
+             H220
+             Z"
+          fill="#E8FFFF" fill-opacity="0.12"/>
+  </g>
+</svg>
