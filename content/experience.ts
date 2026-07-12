@@ -11,7 +11,7 @@ export const experience: ExperienceItem[] = [
     company: 'Global Digital Solution',
     role: 'Full Stack Developer',
     period: 'Feb 2025 - Present',
-    location: 'Remote',
+    location: 'Onsite',
     highlights: [
       'Build and maintain full-stack applications with React and Node.js',
       'Design and manage SQL and MongoDB databases for production workloads',
