@@ -73,6 +73,21 @@ export const projectThemes: Record<
     to: '#1A1A17',
     label: 'Security · UK',
   },
+  writemynursing: {
+    from: '#5B8DEF',
+    to: '#1A1A17',
+    label: 'Education · Marketing',
+  },
+  assignmentbuds: {
+    from: '#E07A5F',
+    to: '#1A1A17',
+    label: 'Education · Writing',
+  },
+  topyourcourse: {
+    from: '#3D8BDB',
+    to: '#1A1A17',
+    label: 'Education · FlexPath',
+  },
 }
 
 export function getProjectTheme(slug: string) {

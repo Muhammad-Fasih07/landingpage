@@ -6,6 +6,7 @@ import { getProjectBySlug, getProjectSlugs } from '@/lib/projects'
 import { getProjectTheme } from '@/lib/projectThemes'
 import { mdxComponents } from '@/components/mdx/MDXComponents'
 import { Container } from '@/components/ui/Container'
+import { ProjectScreenshotGallery } from '@/components/ui/ProjectScreenshotGallery'
 
 type Props = { params: { slug: string } }
 
@@ -40,24 +41,19 @@ export default function ProjectPage({ params }: Props) {
           ← Work
         </Link>
 
-        <div
-          className="relative mt-8 overflow-hidden rounded-studio border border-atelier-line"
-          style={
-            project.image
-              ? undefined
-              : {
-                  background: `linear-gradient(145deg, ${theme.from} 0%, ${theme.to} 75%)`,
-                }
-          }
-        >
-          {project.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={project.image}
-              alt={`${project.title} screenshot`}
-              className="max-h-[480px] w-full object-cover object-top sm:max-h-[560px]"
-            />
-          ) : (
+        {project.image || gallery.length > 0 ? (
+          <ProjectScreenshotGallery
+            images={gallery}
+            title={project.title}
+            coverSrc={project.image}
+          />
+        ) : (
+          <div
+            className="relative mt-8 overflow-hidden rounded-studio border border-atelier-line"
+            style={{
+              background: `linear-gradient(145deg, ${theme.from} 0%, ${theme.to} 75%)`,
+            }}
+          >
             <div className="relative z-[1] px-6 py-14 sm:px-10 sm:py-20">
               <p className="font-mono text-micro uppercase tracking-wider text-white/70">
                 {theme.label}
@@ -69,8 +65,8 @@ export default function ProjectPage({ params }: Props) {
                 {project.summary}
               </p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="mx-auto mt-12 max-w-content">
           <p className="font-mono text-micro uppercase text-atelier-coral">
@@ -107,29 +103,6 @@ export default function ProjectPage({ params }: Props) {
               </a>
             )}
           </div>
-
-          {gallery.length > 1 && (
-            <div className="mt-10 border-t border-atelier-line pt-10">
-              <h2 className="font-display text-title text-atelier-cream">
-                Screenshots
-              </h2>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {gallery.map((src) => (
-                  <div
-                    key={src}
-                    className="overflow-hidden rounded-soft border border-atelier-line bg-atelier-raised"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={src}
-                      alt={`${project.title} UI`}
-                      className="h-auto w-full object-cover object-top"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           <div className="mt-10 border-t border-atelier-line pt-10">
             <MDXRemote source={project.content} components={mdxComponents} />

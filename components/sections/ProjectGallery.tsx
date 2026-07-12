@@ -38,27 +38,15 @@ export function ProjectGallery({
     >
       <Container>
         <FadeIn>
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <SectionHeading
-              index={index}
-              title={title}
-              description={description}
-              className="mb-0"
-            />
-            {showViewAll && (
-              <Link
-                href="/work"
-                className="inline-flex shrink-0 items-center gap-2 text-small font-medium text-atelier-coral transition-colors hover:text-atelier-cream"
-              >
-                View all work
-                <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            )}
-          </div>
+          <SectionHeading
+            index={index}
+            title={title}
+            description={description}
+          />
         </FadeIn>
 
         {featured && (
-          <div className="mb-4 mt-10 sm:mb-5 sm:mt-12">
+          <div className="mb-4 sm:mb-5">
             <ProjectCard project={featured} featured className="w-full" />
           </div>
         )}
@@ -68,6 +56,20 @@ export function ProjectGallery({
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
+
+        {showViewAll && (
+          <FadeIn delay={0.08}>
+            <div className="mt-10 flex justify-center sm:mt-12">
+              <Link
+                href="/work"
+                className="group inline-flex h-12 items-center gap-2 rounded-soft border border-atelier-line bg-atelier-raised px-7 text-small font-medium text-atelier-cream transition-all hover:border-atelier-coral/45 hover:bg-atelier-elevated"
+              >
+                View more projects
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </div>
+          </FadeIn>
+        )}
       </Container>
     </section>
   )
