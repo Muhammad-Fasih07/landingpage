@@ -59,6 +59,13 @@ export const metadata: Metadata = {
     description: site.summary,
     images: ['/og/og-image.png'],
   },
+  ...(process.env.NEXT_PUBLIC_FB_APP_ID
+    ? {
+        other: {
+          'fb:app_id': process.env.NEXT_PUBLIC_FB_APP_ID,
+        },
+      }
+    : {}),
 }
 
 export default function RootLayout({
