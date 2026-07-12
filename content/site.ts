@@ -26,7 +26,7 @@ export const site = {
     },
   ],
   linkedin: 'https://www.linkedin.com/in/mohammad-fasih',
-  url: 'https://mfasih.vercel.app',
+  url: 'https://www.fasihdev.online',
   location: 'Islamabad, Pakistan',
   coreStack: [
     'MERN',

@@ -32,19 +32,33 @@ export const metadata: Metadata = {
   },
   description: site.summary,
   authors: [{ name: site.name }],
+  metadataBase: new URL(site.url),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: `${site.name} - ${site.title}`,
     description: site.summary,
     type: 'website',
     url: site.url,
     siteName: site.name,
+    locale: 'en_US',
+    images: [
+      {
+        url: '/og/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: `${site.name} - ${site.title}`,
+        type: 'image/png',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${site.name} - ${site.title}`,
     description: site.summary,
+    images: ['/og/og-image.png'],
   },
-  metadataBase: new URL(site.url),
 }
 
 export default function RootLayout({
