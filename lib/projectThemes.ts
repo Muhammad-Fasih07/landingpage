@@ -68,6 +68,11 @@ export const projectThemes: Record<
     to: '#1A1A17',
     label: 'Education · Portal',
   },
+  'skywatch-security': {
+    from: '#C4A045',
+    to: '#1A1A17',
+    label: 'Security · UK',
+  },
 }
 
 export function getProjectTheme(slug: string) {
