@@ -25,7 +25,7 @@ export const metadata = {
     description: defaultSEO.description,
   },
   twitter: defaultSEO.twitter,
-  metadataBase: new URL('https://fasihshaukat.dev'),
+  metadataBase: new URL('https://mfasih.vercel.app'),
 }
 
 export default function RootLayout({ children }) {
