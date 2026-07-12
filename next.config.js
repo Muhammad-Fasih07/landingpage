@@ -1,12 +1,15 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'ams.globaldigitsolutions.com',
-      },
-    ],
+    remotePatterns: [],
+    unoptimized: false,
+  },
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.join(__dirname)
+    return config
   },
 }
 
