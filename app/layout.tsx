@@ -39,6 +39,11 @@ export const metadata: Metadata = {
     url: site.url,
     siteName: site.name,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${site.name} - ${site.title}`,
+    description: site.summary,
+  },
   metadataBase: new URL(site.url),
 }
 
