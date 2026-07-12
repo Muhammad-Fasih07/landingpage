@@ -139,7 +139,7 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
       <button
         type="button"
         aria-label="Close hire form"
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 backdrop-blur-sm bg-black/60"
         onClick={onClose}
       />
 
@@ -149,16 +149,16 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
         aria-labelledby={titleId}
         className="relative z-[1] flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-studio border border-atelier-line bg-atelier-raised shadow-studio sm:max-h-[90vh] sm:rounded-studio"
       >
-        <div className="relative overflow-hidden border-b border-atelier-line px-5 pb-5 pt-5 sm:px-7 sm:pt-6">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-atelier-coral/25 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-16 left-8 h-32 w-32 rounded-full bg-atelier-sage/20 blur-3xl" />
+        <div className="overflow-hidden relative px-5 pt-5 pb-5 border-b border-atelier-line sm:px-7 sm:pt-6">
+          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-3xl pointer-events-none bg-atelier-coral/25" />
+          <div className="absolute left-8 -bottom-16 w-32 h-32 rounded-full blur-3xl pointer-events-none bg-atelier-sage/20" />
 
-          <div className="relative flex items-start justify-between gap-3">
+          <div className="flex relative gap-3 justify-between items-start">
             <div className="min-w-0">
               <p className="eyebrow">Let’s work together</p>
               <h2
                 id={titleId}
-                className="mt-2 font-display text-2xl font-semibold tracking-tight text-atelier-cream sm:text-3xl"
+                className="mt-2 text-2xl font-semibold tracking-tight font-display text-atelier-cream sm:text-3xl"
               >
                 Hire {site.shortName}
               </h2>
@@ -169,10 +169,10 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-soft border border-atelier-line text-atelier-mute transition-colors hover:text-atelier-cream"
+              className="inline-flex justify-center items-center w-10 h-10 border transition-colors shrink-0 rounded-soft border-atelier-line text-atelier-mute hover:text-atelier-cream"
               aria-label="Close"
             >
-              <X className="h-4 w-4" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -180,10 +180,10 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
         <div className="overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
           {sent ? (
             <div className="flex flex-col items-center py-10 text-center">
-              <span className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-atelier-sage/40 bg-atelier-sage/15 text-atelier-sage">
-                <CheckCircle2 className="h-7 w-7" />
+              <span className="inline-flex justify-center items-center w-14 h-14 rounded-full border border-atelier-sage/40 bg-atelier-sage/15 text-atelier-sage">
+                <CheckCircle2 className="w-7 h-7" />
               </span>
-              <h3 className="mt-5 font-display text-xl font-semibold text-atelier-cream">
+              <h3 className="mt-5 text-xl font-semibold font-display text-atelier-cream">
                 Message ready
               </h3>
               <p className="mt-2 max-w-sm text-small text-atelier-sand">
@@ -200,7 +200,7 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
               <button
                 type="button"
                 onClick={onClose}
-                className="mt-8 inline-flex h-11 items-center rounded-soft bg-atelier-coral px-6 text-small font-semibold text-atelier-bg"
+                className="inline-flex items-center px-6 mt-8 h-11 font-semibold rounded-soft bg-atelier-coral text-small text-atelier-bg"
               >
                 Done
               </button>
@@ -242,7 +242,7 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
               </Field>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="I’m looking for">
+                <Field label="I’m Hiring for">
                   <select
                     value={form.projectType}
                     onChange={(e) => update('projectType', e.target.value)}
@@ -285,7 +285,7 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
 
               <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-micro text-atelier-mute sm:max-w-[14rem]">
-                  Opens your email app with this inquiry prefilled.
+                  I'll reply within a day.
                 </p>
                 <button
                   type="submit"
@@ -293,7 +293,7 @@ function HireMeModal({ open, onClose }: { open: boolean; onClose: () => void }) 
                   className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-soft bg-atelier-coral px-6 text-small font-semibold text-atelier-bg transition-transform hover:scale-[1.02] disabled:opacity-60 sm:w-auto"
                 >
                   {sending ? 'Preparing…' : 'Send inquiry'}
-                  <Send className="h-4 w-4" />
+                  <Send className="w-4 h-4" />
                 </button>
               </div>
             </form>

@@ -14,34 +14,30 @@ const STATUS_TICKS = [
   'deploy: live',
 ] as const
 
+const TICK_MS = 2400
 const ease = [0.16, 1, 0.3, 1] as const
 
 export function EngineeringPanel({ className }: { className?: string }) {
   const reduce = useReducedMotion()
-  const [activeHop, setActiveHop] = useState(0)
-  const [statusIdx, setStatusIdx] = useState(0)
+  const [tick, setTick] = useState(0)
 
   useEffect(() => {
     if (reduce) return
-    const hop = window.setInterval(() => {
-      setActiveHop((i) => (i + 1) % NODES.length)
-    }, 2400)
-    const status = window.setInterval(() => {
-      setStatusIdx((i) => (i + 1) % STATUS_TICKS.length)
-    }, 3000)
-    return () => {
-      window.clearInterval(hop)
-      window.clearInterval(status)
-    }
+    const id = window.setInterval(() => {
+      setTick((t) => t + 1)
+    }, TICK_MS)
+    return () => window.clearInterval(id)
   }, [reduce])
 
-  const hop = reduce ? 2 : activeHop
-  const status = reduce ? STATUS_TICKS[3] : STATUS_TICKS[statusIdx]
+  const hop = reduce ? 2 : tick % NODES.length
+  const status = reduce
+    ? STATUS_TICKS[3]
+    : STATUS_TICKS[tick % STATUS_TICKS.length]
 
   return (
     <div
       className={cn(
-        'surface-card relative mx-auto w-full max-w-md overflow-visible p-5 shadow-studio sm:max-w-none sm:p-7',
+        'overflow-visible relative p-5 mx-auto w-full max-w-md surface-card shadow-studio sm:max-w-none sm:p-7',
         className
       )}
     >
@@ -51,31 +47,31 @@ export function EngineeringPanel({ className }: { className?: string }) {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-atelier-coral/18 blur-3xl"
+        className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-3xl pointer-events-none bg-atelier-coral/18"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-14 -left-8 h-44 w-44 rounded-full bg-atelier-sage/12 blur-3xl"
+        className="absolute -left-8 -bottom-14 w-44 h-44 rounded-full blur-3xl pointer-events-none bg-atelier-sage/12"
       />
 
       <div className="relative z-[1] flex flex-col gap-5">
         <div>
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-mono text-micro uppercase text-atelier-mute">
+          <div className="flex gap-3 justify-between items-center">
+            <p className="font-mono uppercase text-micro text-atelier-mute">
               Systems
             </p>
             <motion.span
               key={status}
               initial={reduce ? false : { opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, ease }}
+              transition={{ duration: 0.45, ease }}
               className="font-mono text-[10px] uppercase tracking-wider text-atelier-sage"
             >
               {status}
             </motion.span>
           </div>
 
-          <p className="mt-3 font-display text-3xl font-bold leading-tight text-atelier-cream sm:text-4xl">
+          <p className="mt-3 text-3xl font-bold leading-tight font-display text-atelier-cream sm:text-4xl">
             Frontend.
             <br />
             Backend.
@@ -84,13 +80,13 @@ export function EngineeringPanel({ className }: { className?: string }) {
           </p>
         </div>
 
-        <div className="rounded-soft border border-atelier-line bg-atelier-bg/45 p-3 sm:p-4">
+        <div className="p-3 border rounded-soft border-atelier-line bg-atelier-bg/45 sm:p-4">
           <p className="mb-3 font-mono text-[10px] uppercase tracking-wider text-atelier-mute">
             Request path
           </p>
-          <div className="flex items-center justify-between gap-1 sm:gap-2">
+          <div className="flex gap-1 justify-between items-center sm:gap-2">
             {NODES.map((node, i) => (
-              <div key={node} className="flex flex-1 items-center gap-1 sm:gap-2">
+              <div key={node} className="flex flex-1 gap-1 items-center sm:gap-2">
                 <motion.div
                   animate={
                     reduce
@@ -132,10 +128,11 @@ export function EngineeringPanel({ className }: { className?: string }) {
                   </span>
                 </motion.div>
                 {i < NODES.length - 1 && (
-                  <div className="relative h-px w-2 shrink-0 overflow-hidden sm:w-3">
+                  <div className="overflow-hidden relative w-2 h-px shrink-0 sm:w-3">
                     <div className="absolute inset-0 bg-atelier-line" />
                     {!reduce && hop === i && (
                       <motion.div
+                        key={`pulse-${hop}`}
                         className="absolute inset-y-0 w-full bg-atelier-coral/80"
                         initial={{ x: '-100%' }}
                         animate={{ x: '100%' }}
@@ -166,7 +163,7 @@ export function EngineeringPanel({ className }: { className?: string }) {
               <p className="font-mono text-[10px] uppercase text-atelier-mute">
                 Stack
               </p>
-              <p className="mt-1 text-small font-medium text-atelier-cream">
+              <p className="mt-1 font-medium text-small text-atelier-cream">
                 {item}
               </p>
             </motion.div>

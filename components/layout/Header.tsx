@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
-import { site } from '@/content/site'
 import { Container } from '@/components/ui/Container'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { useHireMe } from '@/components/ui/HireMeModal'
+import { SiteLogo } from '@/components/ui/SiteLogo'
 import { cn } from '@/lib/cn'
 
 const links = [
@@ -32,14 +32,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-atelier-line/80 bg-atelier-bg/80 backdrop-blur-xl">
       <Container className="flex h-14 items-center justify-between gap-3 sm:h-16">
-        <Link
-          href="/"
-          className="font-display text-lg font-bold tracking-tight text-atelier-cream transition-colors hover:text-atelier-coral"
-          onClick={() => setMenuOpen(false)}
-        >
-          {site.shortName}
-          <span className="text-atelier-coral">.</span>
-        </Link>
+        <SiteLogo onNavigate={() => setMenuOpen(false)} />
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
           {links.map((link) => (

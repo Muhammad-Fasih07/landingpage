@@ -43,12 +43,12 @@ export function GitHubPicker({
         type="button"
         onClick={() => setOpen(true)}
         className={cn(
-          'w-full rounded-soft border border-atelier-line bg-atelier-bg/45 p-4 text-left backdrop-blur-sm transition-colors hover:border-atelier-coral/40',
+          'p-4 w-full text-left border backdrop-blur-sm transition-colors rounded-soft border-atelier-line bg-atelier-bg/45 hover:border-atelier-coral/40',
           className
         )}
       >
         <p className="font-mono text-micro text-atelier-mute">{label}</p>
-        <p className="mt-2 text-small text-atelier-cream transition-colors group-hover:text-atelier-coral">
+        <p className="mt-2 transition-colors text-small text-atelier-cream group-hover:text-atelier-coral">
           {cardValue}
         </p>
       </button>
@@ -57,7 +57,7 @@ export function GitHubPicker({
         type="button"
         onClick={() => setOpen(true)}
         className={cn(
-          'text-atelier-mute transition-colors hover:text-atelier-coral',
+          'transition-colors text-atelier-mute hover:text-atelier-coral',
           className
         )}
       >
@@ -68,7 +68,7 @@ export function GitHubPicker({
         type="button"
         onClick={() => setOpen(true)}
         className={cn(
-          'inline-flex h-12 items-center rounded-soft border border-atelier-line bg-atelier-raised px-5 text-small text-atelier-sand transition-colors hover:border-atelier-coral/50 hover:text-atelier-cream',
+          'inline-flex items-center px-5 h-12 border transition-colors rounded-soft border-atelier-line bg-atelier-raised text-small text-atelier-sand hover:border-atelier-coral/50 hover:text-atelier-cream',
           className
         )}
       >
@@ -88,7 +88,7 @@ export function GitHubPicker({
           <button
             type="button"
             aria-label="Close"
-            className="absolute inset-0 bg-black/55 backdrop-blur-sm"
+            className="absolute inset-0 backdrop-blur-sm bg-black/55"
             onClick={() => setOpen(false)}
           />
           <div
@@ -98,12 +98,12 @@ export function GitHubPicker({
             aria-labelledby={titleId}
         className="relative z-[1] flex max-h-[92dvh] w-full max-w-md flex-col overflow-hidden rounded-t-studio border border-atelier-line bg-atelier-raised p-5 shadow-studio sm:max-h-[90vh] sm:rounded-studio sm:p-7"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex gap-4 justify-between items-start">
               <div>
                 <p className="eyebrow">GitHub</p>
                 <h2
                   id={titleId}
-                  className="mt-2 font-display text-xl font-semibold text-atelier-cream sm:text-2xl"
+                  className="mt-2 text-xl font-semibold font-display text-atelier-cream sm:text-2xl"
                 >
                   Which profile?
                 </h2>
@@ -114,14 +114,14 @@ export function GitHubPicker({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-soft border border-atelier-line text-atelier-mute transition-colors hover:text-atelier-cream"
+                className="inline-flex justify-center items-center w-9 h-9 border transition-colors shrink-0 rounded-soft border-atelier-line text-atelier-mute hover:text-atelier-cream"
                 aria-label="Close dialog"
               >
-                <X className="h-4 w-4" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <ul className="mt-6 grid gap-3">
+            <ul className="grid gap-3 mt-6">
               {site.githubProfiles.map((profile) => (
                 <li key={profile.handle}>
                   <a
@@ -129,12 +129,12 @@ export function GitHubPicker({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setOpen(false)}
-                    className="group flex items-center gap-4 rounded-soft border border-atelier-line bg-atelier-bg/50 p-4 transition-colors hover:border-atelier-coral/45 hover:bg-atelier-elevated/60"
+                    className="flex gap-4 items-center p-4 border transition-colors group rounded-soft border-atelier-line bg-atelier-bg/50 hover:border-atelier-coral/45 hover:bg-atelier-elevated/60"
                   >
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-soft border border-atelier-line bg-atelier-elevated text-atelier-coral">
-                      <GitBranch className="h-4 w-4" />
+                    <span className="inline-flex justify-center items-center w-10 h-10 border rounded-soft border-atelier-line bg-atelier-elevated text-atelier-coral">
+                      <GitBranch className="w-4 h-4" />
                     </span>
-                    <span className="min-w-0 flex-1">
+                    <span className="flex-1 min-w-0">
                       <span className="block font-mono text-small text-atelier-cream group-hover:text-atelier-coral">
                         @{profile.handle}
                       </span>
@@ -143,7 +143,7 @@ export function GitHubPicker({
                       </span>
                     </span>
                     <span className="text-small text-atelier-mute group-hover:text-atelier-coral">
-                      Open �-
+                      Open
                     </span>
                   </a>
                 </li>

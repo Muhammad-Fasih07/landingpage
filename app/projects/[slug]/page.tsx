@@ -24,12 +24,14 @@ export default function ProjectPage({ params }: Props) {
   const project = getProjectBySlug(params.slug)
   if (!project) notFound()
   const theme = getProjectTheme(project.slug)
-  const gallery =
-    project.screenshots.length > 0
-      ? project.screenshots
-      : project.image
-        ? [project.image]
-        : []
+  const gallery = (() => {
+    const shots = [...project.screenshots]
+    if (project.image && !shots.includes(project.image)) {
+      shots.unshift(project.image)
+    }
+    if (shots.length === 0 && project.image) return [project.image]
+    return shots
+  })()
 
   return (
     <article className="pb-section-sm pt-10 sm:pb-section sm:pt-14">
@@ -41,12 +43,8 @@ export default function ProjectPage({ params }: Props) {
           ← Work
         </Link>
 
-        {project.image || gallery.length > 0 ? (
-          <ProjectScreenshotGallery
-            images={gallery}
-            title={project.title}
-            coverSrc={project.image}
-          />
+        {gallery.length > 0 ? (
+          <ProjectScreenshotGallery images={gallery} title={project.title} />
         ) : (
           <div
             className="relative mt-8 overflow-hidden rounded-studio border border-atelier-line"

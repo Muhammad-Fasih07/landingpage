@@ -1,40 +1,81 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type SyntheticEvent,
+} from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Expand, X } from 'lucide-react'
 import { cn } from '@/lib/cn'
+
+const AUTOPLAY_MS = 2000
+const EASE = [0.16, 1, 0.3, 1] as const
 
 type Props = {
   images: string[]
   title: string
-  /** Hero / cover image shown above the case study */
-  coverSrc?: string
 }
 
-export function ProjectScreenshotGallery({ images, title, coverSrc }: Props) {
-  const gallery = images.length > 0 ? images : coverSrc ? [coverSrc] : []
-  const [open, setOpen] = useState(false)
+type AspectMode = 'portrait' | 'landscape'
+
+export function ProjectScreenshotGallery({ images, title }: Props) {
+  const gallery = images
+  const reduce = useReducedMotion()
   const [index, setIndex] = useState(0)
+  const [open, setOpen] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const [aspect, setAspect] = useState<AspectMode>('landscape')
+  const stageRef = useRef<HTMLDivElement>(null)
 
-  const openAt = useCallback((i: number) => {
-    setIndex(i)
-    setOpen(true)
-  }, [])
+  const multi = gallery.length > 1
+  const current = gallery[index]
 
-  const close = useCallback(() => setOpen(false), [])
+  const goTo = useCallback(
+    (i: number) => {
+      if (gallery.length === 0) return
+      setIndex(((i % gallery.length) + gallery.length) % gallery.length)
+    },
+    [gallery.length]
+  )
 
   const prev = useCallback(() => {
-    setIndex((i) => (i - 1 + gallery.length) % gallery.length)
-  }, [gallery.length])
+    goTo(index - 1)
+  }, [goTo, index])
 
   const next = useCallback(() => {
-    setIndex((i) => (i + 1) % gallery.length)
-  }, [gallery.length])
+    goTo(index + 1)
+  }, [goTo, index])
 
+  const openLightbox = useCallback(() => setOpen(true), [])
+  const closeLightbox = useCallback(() => setOpen(false), [])
+
+  const onImageLoad = useCallback(
+    (e: SyntheticEvent<HTMLImageElement>) => {
+      const img = e.currentTarget
+      if (!img.naturalWidth || !img.naturalHeight) return
+      setAspect(img.naturalHeight > img.naturalWidth ? 'portrait' : 'landscape')
+    },
+    []
+  )
+
+  // Autoplay — pause on hover/focus, lightbox, or reduced motion
+  useEffect(() => {
+    if (!multi || paused || open || reduce) return
+    const id = window.setInterval(() => {
+      setIndex((i) => (i + 1) % gallery.length)
+    }, AUTOPLAY_MS)
+    return () => window.clearInterval(id)
+  }, [multi, paused, open, reduce, gallery.length, index])
+
+  // Lightbox keyboard + body scroll lock
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
+      if (e.key === 'Escape') closeLightbox()
       if (e.key === 'ArrowLeft') prev()
       if (e.key === 'ArrowRight') next()
     }
@@ -45,64 +86,134 @@ export function ProjectScreenshotGallery({ images, title, coverSrc }: Props) {
       document.removeEventListener('keydown', onKey)
       document.body.style.overflow = prevOverflow
     }
-  }, [open, close, prev, next])
+  }, [open, closeLightbox, prev, next])
+
+  const onStageKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (!multi) return
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      prev()
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      next()
+    }
+  }
 
   if (gallery.length === 0) return null
 
-  const coverIndex = coverSrc
-    ? Math.max(0, gallery.indexOf(coverSrc))
-    : 0
+  const isPortrait = aspect === 'portrait'
 
   return (
     <>
-      {coverSrc && (
-        <button
-          type="button"
-          onClick={() => openAt(coverIndex >= 0 ? coverIndex : 0)}
-          className="group relative mt-8 block w-full overflow-hidden rounded-studio border border-atelier-line text-left"
+      <div
+        ref={stageRef}
+        tabIndex={0}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label={`${title} screenshots`}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={(e) => {
+          if (!stageRef.current?.contains(e.relatedTarget as Node)) {
+            setPaused(false)
+          }
+        }}
+        onKeyDown={onStageKeyDown}
+        className="overflow-hidden relative mt-8 border outline-none rounded-studio border-atelier-line bg-atelier-raised focus-visible:ring-2 focus-visible:ring-atelier-coral/40"
+      >
+        <div
+          className={cn(
+            'relative w-full bg-atelier-elevated/40 transition-[height] duration-500 ease-studio',
+            isPortrait
+              ? 'h-[min(72vh,680px)] sm:h-[min(78vh,760px)]'
+              : 'h-[min(48vh,420px)] sm:h-[min(56vh,520px)]'
+          )}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={coverSrc}
-            alt={`${title} screenshot`}
-            className="max-h-[480px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01] sm:max-h-[560px]"
-          />
-          <span className="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-soft bg-black/55 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
-            <Expand className="h-3.5 w-3.5" />
-            Full screen
-          </span>
-        </button>
-      )}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={current}
+              initial={reduce ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={reduce ? undefined : { opacity: 0 }}
+              transition={{ duration: reduce ? 0 : 0.45, ease: EASE }}
+              className="absolute inset-0 flex items-center justify-center p-3 sm:p-5"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={current}
+                alt={`${title} screenshot ${index + 1}`}
+                onLoad={onImageLoad}
+                className={cn(
+                  'object-contain shadow-studio',
+                  isPortrait
+                    ? 'h-full w-auto max-w-[min(58%,340px)] rounded-[1.1rem] border border-atelier-line bg-atelier-bg'
+                    : 'h-full w-full max-h-full max-w-full rounded-soft'
+                )}
+              />
+            </motion.div>
+          </AnimatePresence>
 
-      {gallery.length > 1 && (
-        <div className="mt-10 border-t border-atelier-line pt-10">
-          <h2 className="font-display text-title text-atelier-cream">
-            Screenshots
-          </h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {gallery.map((src, i) => (
+          <p className="pointer-events-none absolute left-3 top-3 z-[2] font-mono text-micro text-white/70 sm:left-4 sm:top-4">
+            <span className="px-2 py-1 backdrop-blur-sm rounded-soft bg-black/50">
+              {index + 1} / {gallery.length}
+            </span>
+          </p>
+
+          {multi && (
+            <>
               <button
-                key={src}
                 type="button"
-                onClick={() => openAt(i)}
-                className="group relative overflow-hidden rounded-soft border border-atelier-line bg-atelier-raised text-left transition-colors hover:border-atelier-coral/40"
+                onClick={prev}
+                className="absolute left-2 top-1/2 z-[2] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 sm:left-3 sm:h-11 sm:w-11"
+                aria-label="Previous screenshot"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt={`${title} UI ${i + 1}`}
-                  className="h-auto w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                />
-                <span className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/25">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
-                    <Expand className="h-4 w-4" />
-                  </span>
-                </span>
+                <ChevronLeft className="w-5 h-5" />
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={next}
+                className="absolute right-2 top-1/2 z-[2] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 sm:right-3 sm:h-11 sm:w-11"
+                aria-label="Next screenshot"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </>
+          )}
+
+          <div className="absolute bottom-3 left-0 right-0 z-[2] flex items-end justify-between gap-3 px-3 sm:bottom-4 sm:px-4">
+            <div className="flex min-h-[28px] flex-1 items-center justify-center gap-1.5">
+              {multi &&
+                gallery.map((src, i) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => goTo(i)}
+                    aria-label={`Go to screenshot ${i + 1}`}
+                    aria-current={i === index ? 'true' : undefined}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all duration-300',
+                      i === index
+                        ? 'w-5 bg-atelier-coral'
+                        : 'w-1.5 bg-atelier-mute/70 hover:bg-atelier-sand'
+                    )}
+                  />
+                ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={openLightbox}
+              className="inline-flex shrink-0 items-center gap-2 rounded-soft border border-white/20 bg-black/50 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+              aria-label="Open fullscreen"
+            >
+              <Expand className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Full screen</span>
+            </button>
           </div>
         </div>
-      )}
+      </div>
 
       {open && (
         <div
@@ -115,26 +226,26 @@ export function ProjectScreenshotGallery({ images, title, coverSrc }: Props) {
             type="button"
             aria-label="Close fullscreen"
             className="absolute inset-0 cursor-zoom-out"
-            onClick={close}
+            onClick={closeLightbox}
           />
 
           <div className="relative z-[1] flex max-h-full w-full max-w-6xl flex-col">
-            <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="flex gap-3 justify-between items-center mb-3">
               <p className="font-mono text-micro text-white/70">
                 {index + 1} / {gallery.length}
               </p>
               <button
                 type="button"
-                onClick={close}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-soft border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20"
+                onClick={closeLightbox}
+                className="inline-flex justify-center items-center w-10 h-10 text-white border transition-colors rounded-soft border-white/20 bg-white/10 hover:bg-white/20"
                 aria-label="Close"
               >
-                <X className="h-4 w-4" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="relative flex min-h-0 flex-1 items-center justify-center">
-              {gallery.length > 1 && (
+            <div className="flex relative flex-1 justify-center items-center min-h-0">
+              {multi && (
                 <button
                   type="button"
                   onClick={(e) => {
@@ -144,21 +255,19 @@ export function ProjectScreenshotGallery({ images, title, coverSrc }: Props) {
                   className="absolute left-0 z-[2] inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 sm:left-2"
                   aria-label="Previous screenshot"
                 >
-                  <ChevronLeft className="h-5 w-5" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
               )}
 
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={gallery[index]}
+                src={current}
                 alt={`${title} fullscreen ${index + 1}`}
-                className={cn(
-                  'max-h-[min(82vh,900px)] w-auto max-w-full rounded-soft object-contain shadow-studio'
-                )}
+                className="max-h-[min(82vh,900px)] w-auto max-w-full rounded-soft object-contain shadow-studio"
                 onClick={(e) => e.stopPropagation()}
               />
 
-              {gallery.length > 1 && (
+              {multi && (
                 <button
                   type="button"
                   onClick={(e) => {
@@ -168,7 +277,7 @@ export function ProjectScreenshotGallery({ images, title, coverSrc }: Props) {
                   className="absolute right-0 z-[2] inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 sm:right-2"
                   aria-label="Next screenshot"
                 >
-                  <ChevronRight className="h-5 w-5" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               )}
             </div>

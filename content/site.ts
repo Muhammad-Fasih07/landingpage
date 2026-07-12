@@ -15,13 +15,13 @@ export const site = {
   github: 'https://github.com/fasihgds-afk',
   githubProfiles: [
     {
-      handle: 'fasihgds-afk',
-      url: 'https://github.com/fasihgds-afk',
+      handle: 'muhammad-fasih07',
+      url: 'https://github.com/muhammad-fasih07',
       label: 'Primary · product & portal work',
     },
     {
-      handle: 'muhammad-fasih07',
-      url: 'https://github.com/muhammad-fasih07',
+      handle: 'fasihgds-afk',
+      url: 'https://github.com/fasihgds-afk',
       label: 'Secondary · earlier repos & experiments',
     },
   ],
